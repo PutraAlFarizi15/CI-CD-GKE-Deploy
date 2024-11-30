@@ -1,0 +1,33 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+steps:
+  # build docker image
+  - name: 'gcr.io/cloud-builders/docker' # image prebuilt oleh Google
+    args: ['build', '-t', 'gcr.io/corded-terrain-441302-e3/fastapi-app:latest', '.']
+
+  # push image to container registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/corded-terrain-441302-e3/fastapi-app:latest']
+    
+  # authenticate to GKE
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        gcloud container clusters get-credentials ci-cd-cluster --zone us-central1 --project corded-terrain-441302-e3
+
+  # deploy to GKE
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        kubectl apply -f kubernetes/deployment.yaml
+        kubectl apply -f kubernetes/service.yaml
+
+images:
+  - 'gcr.io/corded-terrain-441302-e3/fastapi-app:latest'
+
+
+
