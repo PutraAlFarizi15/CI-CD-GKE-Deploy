@@ -15,7 +15,7 @@ steps:
     args:
       - '-c'
       - |
-        gcloud container clusters get-credentials ci-cd-cluster --zone us-central1 --project corded-terrain-441302-e3
+        gcloud container clusters get-credentials ci-cd-cluster --zone us-central1-f --project corded-terrain-441302-e3
 
   # deploy to GKE
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
